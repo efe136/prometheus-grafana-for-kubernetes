@@ -119,7 +119,8 @@ data:
         - source_labels: [__meta_kubernetes_service_name]
           action: replace
           target_label: kubernetes_name
-
+         
+         # this is extra and for finding consul services if you use consul.
         - job_name: dummy
         metrics_path: '/management/prometheus'
         consul_sd_configs:

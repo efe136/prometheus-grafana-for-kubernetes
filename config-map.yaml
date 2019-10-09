@@ -121,16 +121,28 @@ data:
           target_label: kubernetes_name
          
          ###this is extra and for finding consul services if you use consul.###
-        - job_name: dummy
-        metrics_path: '/management/prometheus'
+      - job_name: 'consul'
+        metrics_path: '/metrics'
+        params:
+          format: ['prometheus']
+          help: ['yes']
+        scrape_interval: 5s
         consul_sd_configs:
-          - server: 'localhost:8500'
+        - server: 'consul:8500'
+          allow_stale: true
+          refresh_interval: 5m
         relabel_configs:
-          regex: true
-          - source_labels: [__meta_consul_tags]
-          regex: .*,job-([^,]+),.*
-          action: keep
-          replacement: '${1}'
+        - source_labels: [__meta_consul_service]
+          regex: (.*)
+          target_label: service
+          replacement: $1
+        - source_labels: [__meta_consul_node]
+          regex: (.*)
+          target_label: instance
+          replacement: $1
+        - source_labels: [__meta_consul_tags]
+          separator: ','
+          regex: 'profile=([^=]*)([^,]*)'
           target_label: job
-          - source_labels: [__meta_consul_service]
-          target_label: job
+          action: replace
+          replacement: $1

@@ -122,19 +122,18 @@ data:
          
          ###this is extra and for finding consul services if you use consul.###
       - job_name: 'consul'
+        bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
         metrics_path: '/metrics'
-        params:
-          format: ['prometheus']
-          help: ['yes']
-        scrape_interval: 5s
+        scrape_interval: 10s
+        scrape_timeout: 10s
         consul_sd_configs:
-        - server: 'consul:8500'
+        - server: 'localhost:8500'
           allow_stale: true
-          refresh_interval: 5m
+          refresh_interval: 1m
         relabel_configs:
         - source_labels: [__meta_consul_service]
           regex: (.*)
-          target_label: service
+          target_label: application
           replacement: $1
         - source_labels: [__meta_consul_node]
           regex: (.*)
@@ -146,3 +145,14 @@ data:
           target_label: job
           action: replace
           replacement: $1
+        - source_labels: [__meta_consul_metadata_metrics_path]
+          separator: ';'
+          regex: (.*)
+          target_label: __metrics_path__
+          replacement: $1
+          action: replace
+        - source_labels: [__meta_consul_address]
+          separator: ';'
+          target_label: __address__
+          replacement: $1
+          action: replace

@@ -9,7 +9,7 @@ data:
                  "editable": false,
                  "orgId": 1,
                  "type": "prometheus",
-                 "url": "http://10.0.81.24:30000",
+                 "url": "http://localhost:30000",
                  "version": 1
             }
         ]

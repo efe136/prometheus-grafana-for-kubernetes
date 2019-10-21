@@ -1,0 +1,19 @@
+apiVersion: v1
+data:
+  prometheus.yaml: |-
+    {
+        "apiVersion": 1,
+        "datasources": [
+            {
+                 "access": "proxy",
+                 "editable": false,
+                 "orgId": 1,
+                 "type": "prometheus",
+                 "url": "http://10.0.81.24:30000",
+                 "version": 1
+            }
+        ]
+    }
+kind: ConfigMap
+metadata:
+  name: grafana-datasources
